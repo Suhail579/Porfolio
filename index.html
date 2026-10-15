@@ -64,7 +64,7 @@
     
 <a class="logo" href="#top" aria-label="Muhammed Suhail K.S, back to top">
   <span class="logo-text">
-  <span class="logo-letter">S</span><span class="logo-letter">u</span><span class="logo-letter">h</span><span class="logo-letter">a</span><span class="logo-letter">i</span><span class="logo-letter">l</span><span class="logo-dot">.<span class="logo-letter">d<span class="logo-letter">e<span class="logo-letter">v</span>
+    <span class="logo-letter">S</span><span class="logo-letter">u</span><span class="logo-letter">h</span><span class="logo-letter">a</span><span class="logo-letter">i</span><span class="logo-letter">l</span><span class="logo-dot">.</span>
   </span>
 </a>
 
@@ -560,89 +560,85 @@
   onScroll();
 
   
+// Desktop mouse + smooth mobile touch bloom
+var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-// Smooth desktop glow + mobile touch bloom
-var fine = window.matchMedia(
-  "(hover: hover) and (pointer: fine)"
-).matches;
-
-var glowX = window.innerWidth / 2;
-var glowY = window.innerHeight / 2;
-var targetX = glowX;
-var targetY = glowY;
-var glowFrame = null;
+var targetX = 0;
+var targetY = 0;
+var currentX = 0;
+var currentY = 0;
+var animationFrame = null;
 
 function moveBloom(x, y) {
-  targetX = x;
-  targetY = y;
   spot.classList.add("bloom-active");
 
-  if (!glowFrame) {
-    glowFrame = requestAnimationFrame(animateBloom);
+  // Desktop: unchanged
+  if (fine) {
+    spot.style.setProperty("--x", x + "px");
+    spot.style.setProperty("--y", y + "px");
+    return;
+  }
+
+  // Mobile: smooth touch movement
+  targetX = x;
+  targetY = y;
+
+  if (animationFrame === null) {
+    currentX = targetX;
+    currentY = targetY;
+
+    spot.style.setProperty("--x", currentX + "px");
+    spot.style.setProperty("--y", currentY + "px");
+
+    animationFrame = requestAnimationFrame(animateBloom);
   }
 }
 
 function animateBloom() {
-  // Smoothly follow the finger or mouse
-  glowX += (targetX - glowX) * 0.16;
-  glowY += (targetY - glowY) * 0.16;
+  currentX += (targetX - currentX) * 0.15;
+  currentY += (targetY - currentY) * 0.15;
 
-  spot.style.setProperty("--x", glowX + "px");
-  spot.style.setProperty("--y", glowY + "px");
+  spot.style.setProperty("--x", currentX + "px");
+  spot.style.setProperty("--y", currentY + "px");
 
   if (
-    Math.abs(targetX - glowX) > 0.5 ||
-    Math.abs(targetY - glowY) > 0.5
+    Math.abs(targetX - currentX) > 0.5 ||
+    Math.abs(targetY - currentY) > 0.5
   ) {
-    glowFrame = requestAnimationFrame(animateBloom);
+    animationFrame = requestAnimationFrame(animateBloom);
   } else {
-    glowX = targetX;
-    glowY = targetY;
-
-    spot.style.setProperty("--x", glowX + "px");
-    spot.style.setProperty("--y", glowY + "px");
-
-    glowFrame = null;
+    currentX = targetX;
+    currentY = targetY;
+    spot.style.setProperty("--x", currentX + "px");
+    spot.style.setProperty("--y", currentY + "px");
+    animationFrame = null;
   }
 }
 
 if (!reduce) {
-  // Desktop mouse movement
-  if (fine) {
-    window.addEventListener("pointermove", function (e) {
-      if (e.pointerType === "mouse") {
-        moveBloom(e.clientX, e.clientY);
-      }
-    }, { passive: true });
-  }
+  window.addEventListener("pointermove", function (e) {
+    if (e.pointerType === "mouse") {
+      moveBloom(e.clientX, e.clientY);
+    }
+  }, { passive: true });
 
-  // Mobile finger movement
   window.addEventListener("touchstart", function (e) {
     if (e.touches.length) {
-      moveBloom(
-        e.touches[0].clientX,
-        e.touches[0].clientY
-      );
+      moveBloom(e.touches[0].clientX, e.touches[0].clientY);
     }
   }, { passive: true });
 
   window.addEventListener("touchmove", function (e) {
     if (e.touches.length) {
-      moveBloom(
-        e.touches[0].clientX,
-        e.touches[0].clientY
-      );
+      moveBloom(e.touches[0].clientX, e.touches[0].clientY);
     }
   }, { passive: true });
 
   window.addEventListener("touchend", function () {
     spot.classList.remove("bloom-active");
   }, { passive: true });
-
-  window.addEventListener("touchcancel", function () {
-    spot.classList.remove("bloom-active");
-  }, { passive: true });
 }
+
 
   /* =====================================================================
      TOAST: small popup message
