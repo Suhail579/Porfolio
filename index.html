@@ -64,7 +64,7 @@
     
 <a class="logo" href="#top" aria-label="Muhammed Suhail K.S, back to top">
   <span class="logo-text">
-    <span class="logo-letter">S</span><span class="logo-letter">u</span><span class="logo-letter">h</span><span class="logo-letter">a</span><span class="logo-letter">i</span><span class="logo-letter">l</span><span class="logo-dot">.<span class="logo-letter">d<span class="logo-letter">e<span class="logo-letter">v</span>
+    <span class="logo-letter">S</span><span class="logo-letter">u</span><span class="logo-letter">h</span><span class="logo-letter">a</span><span class="logo-letter">i</span><span class="logo-letter">l</span><span class="logo-dot">.</span>
   </span>
 </a>
 
@@ -595,15 +595,15 @@ function moveBloom(x, y) {
 }
 
 function animateBloom() {
-  currentX += (targetX - currentX) * 0.7;
-  currentY += (targetY - currentY) * 0.7;
+  currentX += (targetX - currentX) * 0.10;
+  currentY += (targetY - currentY) * 0.10;
 
   spot.style.setProperty("--x", currentX + "px");
   spot.style.setProperty("--y", currentY + "px");
 
   if (
-    Math.abs(targetX - currentX) > 0.2 ||
-    Math.abs(targetY - currentY) > 0.2
+    Math.abs(targetX - currentX) > 0.5 ||
+    Math.abs(targetY - currentY) > 0.5
   ) {
     animationFrame = requestAnimationFrame(animateBloom);
   } else {
