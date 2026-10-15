@@ -595,15 +595,15 @@ function moveBloom(x, y) {
 }
 
 function animateBloom() {
-  currentX += (targetX - currentX) * 0.15;
-  currentY += (targetY - currentY) * 0.15;
+  currentX += (targetX - currentX) * 0.7;
+  currentY += (targetY - currentY) * 0.7;
 
   spot.style.setProperty("--x", currentX + "px");
   spot.style.setProperty("--y", currentY + "px");
 
   if (
-    Math.abs(targetX - currentX) > 0.5 ||
-    Math.abs(targetY - currentY) > 0.5
+    Math.abs(targetX - currentX) > 0.2 ||
+    Math.abs(targetY - currentY) > 0.2
   ) {
     animationFrame = requestAnimationFrame(animateBloom);
   } else {
