@@ -560,38 +560,89 @@
   onScroll();
 
   
-  // Desktop mouse + mobile touch bloom
-  var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-  function moveBloom(x, y) {
-    spot.style.setProperty("--x", x + "px");
-    spot.style.setProperty("--y", y + "px");
-    spot.classList.add("bloom-active");
+// Smooth desktop glow + mobile touch bloom
+var fine = window.matchMedia(
+  "(hover: hover) and (pointer: fine)"
+).matches;
+
+var glowX = window.innerWidth / 2;
+var glowY = window.innerHeight / 2;
+var targetX = glowX;
+var targetY = glowY;
+var glowFrame = null;
+
+function moveBloom(x, y) {
+  targetX = x;
+  targetY = y;
+  spot.classList.add("bloom-active");
+
+  if (!glowFrame) {
+    glowFrame = requestAnimationFrame(animateBloom);
   }
+}
 
-  if (!reduce) {
+function animateBloom() {
+  // Smoothly follow the finger or mouse
+  glowX += (targetX - glowX) * 0.16;
+  glowY += (targetY - glowY) * 0.16;
+
+  spot.style.setProperty("--x", glowX + "px");
+  spot.style.setProperty("--y", glowY + "px");
+
+  if (
+    Math.abs(targetX - glowX) > 0.5 ||
+    Math.abs(targetY - glowY) > 0.5
+  ) {
+    glowFrame = requestAnimationFrame(animateBloom);
+  } else {
+    glowX = targetX;
+    glowY = targetY;
+
+    spot.style.setProperty("--x", glowX + "px");
+    spot.style.setProperty("--y", glowY + "px");
+
+    glowFrame = null;
+  }
+}
+
+if (!reduce) {
+  // Desktop mouse movement
+  if (fine) {
     window.addEventListener("pointermove", function (e) {
-      if (e.pointerType !== "touch" || !fine) {
+      if (e.pointerType === "mouse") {
         moveBloom(e.clientX, e.clientY);
       }
     }, { passive: true });
-
-    window.addEventListener("touchstart", function (e) {
-      if (e.touches.length) {
-        moveBloom(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    window.addEventListener("touchmove", function (e) {
-      if (e.touches.length) {
-        moveBloom(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    window.addEventListener("touchend", function () {
-      spot.classList.remove("bloom-active");
-    }, { passive: true });
   }
+
+  // Mobile finger movement
+  window.addEventListener("touchstart", function (e) {
+    if (e.touches.length) {
+      moveBloom(
+        e.touches[0].clientX,
+        e.touches[0].clientY
+      );
+    }
+  }, { passive: true });
+
+  window.addEventListener("touchmove", function (e) {
+    if (e.touches.length) {
+      moveBloom(
+        e.touches[0].clientX,
+        e.touches[0].clientY
+      );
+    }
+  }, { passive: true });
+
+  window.addEventListener("touchend", function () {
+    spot.classList.remove("bloom-active");
+  }, { passive: true });
+
+  window.addEventListener("touchcancel", function () {
+    spot.classList.remove("bloom-active");
+  }, { passive: true });
+}
 
   /* =====================================================================
      TOAST: small popup message
