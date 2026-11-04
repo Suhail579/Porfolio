@@ -82,7 +82,7 @@
 
       
     <!-- Resume button in the desktop nav -->
-     <a href="Suhail_Resume.pdf" download="Suhail_Resume"><button class="btn pri sm nav-cta js-resume" type="button"><svg class="i dl"><use href="#i-dl"/></svg>Resume</button></a>
+    <button class="btn pri sm nav-cta js-resume" type="button"><svg class="i dl"><use href="#i-dl"/></svg>Resume</button>
     <button class="icon-btn" id="theme" type="button" aria-label="Switch colour theme">
       <svg class="i sun"><use href="#i-sun"/></svg>
       <svg class="i moon"><use href="#i-moon"/></svg>
@@ -344,7 +344,7 @@
               "PythonAnywhere", "Razorpay API"];
 
   var ROLES = ["Python Full Stack Developer", "Django and React.js Developer", "Software Developer"];
-  var RESUME_FILE = "Suhail_Resume.pdf";    // file in your folder
+  var RESUME_FILE = "suhail_resume.pdf";
   var RESUME_NAME = "Suhail_Resume.pdf";   // name the visitor gets
 
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
@@ -682,12 +682,12 @@ if (!reduce) {
   });
 
   /* =====================================================================
-     RESUME DOWNLOAD: downloads Muhammed_Suhail_KS_Resume.pdf
+     RESUME DOWNLOAD
      ===================================================================== */
   function downloadResume() {
     var a = document.createElement("a");
     a.href = RESUME_FILE;
-    a.download = RESUME_FILE;
+    a.download = RESUME_NAME;
     document.body.appendChild(a);
     a.click();
     a.remove();
